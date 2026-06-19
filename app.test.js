@@ -30,3 +30,13 @@ test("speed control adjusts in 0.1 increments", () => {
 
   assert.match(html, /id="speedInput"[^>]*step="0\.1"/);
 });
+
+test("auto scroll accumulates fractional movement for slow speeds", () => {
+  const js = readFileSync("script.js", "utf8");
+
+  assert.match(js, /scrollPosition:\s*0/);
+  assert.match(js, /state\.scrollPosition\s*=\s*viewer\.scrollTop/);
+  assert.match(js, /state\.scrollPosition\s*=\s*Math\.min\(maxScroll,\s*Math\.max\(0,\s*state\.scrollPosition\s*\+\s*delta\)\)/);
+  assert.match(js, /viewer\.scrollTop\s*=\s*state\.scrollPosition/);
+  assert.doesNotMatch(js, /viewer\.scrollTop\s*\+=/);
+});

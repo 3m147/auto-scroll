@@ -17,6 +17,7 @@
     direction: "down",
     isPlaying: false,
     lastFrameTime: 0,
+    scrollPosition: 0,
     objectUrl: null,
     pdfRenderToken: 0,
     fullscreenClickTimer: null,
@@ -55,6 +56,7 @@
     pause();
     clearObjectUrl();
     state.pdfRenderToken += 1;
+    state.scrollPosition = 0;
     viewer.scrollTop = 0;
     content.innerHTML = "";
     hideDropZone();
@@ -91,10 +93,14 @@
 
     const pixelsPerSecond = getSpeed() * 36;
     const movement = (pixelsPerSecond * elapsed) / 1000;
-    viewer.scrollTop += state.direction === "down" ? movement : -movement;
+    const delta = state.direction === "down" ? movement : -movement;
+    const maxScroll = Math.max(0, viewer.scrollHeight - viewer.clientHeight);
 
-    const atTop = viewer.scrollTop <= 0;
-    const atBottom = viewer.scrollTop + viewer.clientHeight >= viewer.scrollHeight - 1;
+    state.scrollPosition = Math.min(maxScroll, Math.max(0, state.scrollPosition + delta));
+    viewer.scrollTop = state.scrollPosition;
+
+    const atTop = state.scrollPosition <= 0;
+    const atBottom = state.scrollPosition >= maxScroll;
     if ((state.direction === "up" && atTop) || (state.direction === "down" && atBottom)) {
       pause();
       return;
@@ -110,6 +116,7 @@
 
     state.isPlaying = true;
     state.lastFrameTime = 0;
+    state.scrollPosition = viewer.scrollTop;
     playButton.textContent = "정지";
     playButton.setAttribute("aria-pressed", "true");
     requestAnimationFrame(tick);
