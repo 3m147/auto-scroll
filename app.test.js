@@ -20,3 +20,9 @@ test("loaded files hide the empty state so it cannot open the file picker", () =
   assert.match(js, /function handleDropZoneClick\(\)\s*{[^}]*if\s*\(dropZone\.hidden\)/s);
   assert.match(js, /dropZone\.addEventListener\("click",\s*handleDropZoneClick\)/);
 });
+
+test("speed control adjusts in 0.1 increments", () => {
+  const html = readFileSync("index.html", "utf8");
+
+  assert.match(html, /id="speedInput"[^>]*step="0\.1"/);
+});
