@@ -309,9 +309,15 @@
   viewer.addEventListener("click", handleViewerClick);
   viewer.addEventListener("dblclick", handleViewerDoubleClick);
 
-  dropZone.addEventListener("click", () => {
+  function handleDropZoneClick() {
+    if (dropZone.hidden) {
+      return;
+    }
+
     fileInput.click();
-  });
+  }
+
+  dropZone.addEventListener("click", handleDropZoneClick);
 
   updateSpeedLabel();
   setDirection("down");

@@ -11,3 +11,12 @@ test("fullscreen hides controls and viewer handles click gestures", () => {
   assert.match(js, /viewer\.addEventListener\("click",\s*handleViewerClick\)/);
   assert.match(js, /viewer\.addEventListener\("dblclick",\s*handleViewerDoubleClick\)/);
 });
+
+test("loaded files hide the empty state so it cannot open the file picker", () => {
+  const css = readFileSync("style.css", "utf8");
+  const js = readFileSync("script.js", "utf8");
+
+  assert.match(css, /\.empty-state\[hidden\]\s*{[^}]*display:\s*none;/s);
+  assert.match(js, /function handleDropZoneClick\(\)\s*{[^}]*if\s*\(dropZone\.hidden\)/s);
+  assert.match(js, /dropZone\.addEventListener\("click",\s*handleDropZoneClick\)/);
+});
