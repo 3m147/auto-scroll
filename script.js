@@ -24,8 +24,24 @@
 
   function setMessage(title, detail) {
     content.innerHTML = "";
-    dropZone.hidden = false;
+    showDropZone();
     dropZone.innerHTML = `<strong>${title}</strong><span>${detail}</span>`;
+  }
+
+  function showDropZone() {
+    viewer.classList.remove("has-file");
+    dropZone.hidden = false;
+    dropZone.removeAttribute("aria-hidden");
+    dropZone.style.display = "";
+    dropZone.style.pointerEvents = "";
+  }
+
+  function hideDropZone() {
+    viewer.classList.add("has-file");
+    dropZone.hidden = true;
+    dropZone.setAttribute("aria-hidden", "true");
+    dropZone.style.display = "none";
+    dropZone.style.pointerEvents = "none";
   }
 
   function clearObjectUrl() {
@@ -41,7 +57,7 @@
     state.pdfRenderToken += 1;
     viewer.scrollTop = 0;
     content.innerHTML = "";
-    dropZone.hidden = true;
+    hideDropZone();
   }
 
   function setDirection(direction) {
@@ -310,7 +326,7 @@
   viewer.addEventListener("dblclick", handleViewerDoubleClick);
 
   function handleDropZoneClick() {
-    if (dropZone.hidden) {
+    if (dropZone.hidden || viewer.classList.contains("has-file")) {
       return;
     }
 

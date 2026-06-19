@@ -174,8 +174,10 @@ input {
   text-align: center;
 }
 
-.empty-state[hidden] {
-  display: none;
+.empty-state[hidden],
+.viewer.has-file .empty-state {
+  display: none !important;
+  pointer-events: none;
 }
 
 .empty-state strong {
