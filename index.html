@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Scroll Viewer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="toolbar" aria-label="자동 스크롤 조작">
+        <label class="file-button">
+          <input id="fileInput" type="file" accept="image/*,.pdf,application/pdf" />
+          파일 선택
+        </label>
+
+        <button id="playButton" class="control-button primary" type="button" aria-pressed="false">
+          시작
+        </button>
+
+        <div class="speed-control" aria-label="스크롤 속도">
+          <label for="speedInput">속도</label>
+          <input id="speedInput" type="range" min="0" max="10" step="0.5" value="2.5" />
+          <output id="speedOutput" for="speedInput">2.5</output>
+        </div>
+
+        <div class="direction-control" aria-label="스크롤 방향">
+          <button id="upButton" class="control-button" type="button" data-direction="up">위로</button>
+          <button id="downButton" class="control-button selected" type="button" data-direction="down">아래로</button>
+        </div>
+
+        <button id="fullscreenButton" class="control-button" type="button">전체화면</button>
+      </section>
+
+      <section id="viewer" class="viewer" aria-label="파일 미리보기">
+        <div id="dropZone" class="empty-state">
+          <strong>사진 또는 PDF를 넣으세요</strong>
+          <span>클릭해서 선택하거나 파일을 이곳에 끌어다 놓을 수 있습니다.</span>
+        </div>
+        <div id="content" class="content" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

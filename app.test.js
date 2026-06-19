@@ -1,0 +1,13 @@
+const assert = require("node:assert/strict");
+const { readFileSync } = require("node:fs");
+const test = require("node:test");
+
+test("fullscreen hides controls and viewer handles click gestures", () => {
+  const css = readFileSync("style.css", "utf8");
+  const js = readFileSync("script.js", "utf8");
+
+  assert.match(css, /:fullscreen\s+\.toolbar\s*{[^}]*display:\s*none;/s);
+  assert.match(css, /:fullscreen\s+\.app\s*{[^}]*grid-template-rows:\s*1fr;/s);
+  assert.match(js, /viewer\.addEventListener\("click",\s*handleViewerClick\)/);
+  assert.match(js, /viewer\.addEventListener\("dblclick",\s*handleViewerDoubleClick\)/);
+});
