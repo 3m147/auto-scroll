@@ -40,3 +40,14 @@ test("auto scroll accumulates fractional movement for slow speeds", () => {
   assert.match(js, /viewer\.scrollTop\s*=\s*state\.scrollPosition/);
   assert.doesNotMatch(js, /viewer\.scrollTop\s*\+=/);
 });
+
+test("mobile fullscreen preserves the current orientation instead of forcing landscape", () => {
+  const js = readFileSync("script.js", "utf8");
+
+  assert.match(js, /preFullscreenOrientation:\s*null/);
+  assert.match(js, /function getViewportOrientation\(\)/);
+  assert.match(js, /state\.preFullscreenOrientation\s*=\s*getViewportOrientation\(\)/);
+  assert.match(js, /lockMobileOrientation\(state\.preFullscreenOrientation\)/);
+  assert.match(js, /screen\.orientation\.unlock\(\)/);
+  assert.doesNotMatch(js, /lock\("landscape"\)/);
+});

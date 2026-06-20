@@ -21,6 +21,7 @@
     objectUrl: null,
     pdfRenderToken: 0,
     fullscreenClickTimer: null,
+    preFullscreenOrientation: null,
   };
 
   function setMessage(title, detail) {
@@ -77,6 +78,34 @@
 
   function updateSpeedLabel() {
     speedOutput.value = Number(speedInput.value).toFixed(1);
+  }
+
+  function isTouchDevice() {
+    return window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+  }
+
+  function getViewportOrientation() {
+    return window.innerHeight >= window.innerWidth ? "portrait" : "landscape";
+  }
+
+  async function lockMobileOrientation(orientation) {
+    if (!isTouchDevice() || !screen.orientation || !screen.orientation.lock) {
+      return;
+    }
+
+    try {
+      await screen.orientation.lock(orientation);
+    } catch (error) {
+      // Some mobile browsers reject orientation locks even after fullscreen.
+    }
+  }
+
+  function unlockMobileOrientation() {
+    if (!screen.orientation || !screen.orientation.unlock) {
+      return;
+    }
+
+    screen.orientation.unlock();
   }
 
   function tick(timestamp) {
@@ -236,12 +265,16 @@
 
   async function toggleFullscreen() {
     if (!document.fullscreenElement) {
+      state.preFullscreenOrientation = getViewportOrientation();
       await document.documentElement.requestFullscreen();
+      await lockMobileOrientation(state.preFullscreenOrientation);
       fullscreenButton.textContent = "화면복귀";
       return;
     }
 
     await document.exitFullscreen();
+    unlockMobileOrientation();
+    state.preFullscreenOrientation = null;
     fullscreenButton.textContent = "전체화면";
   }
 
@@ -282,6 +315,8 @@
     }
 
     document.exitFullscreen().catch(() => {});
+    unlockMobileOrientation();
+    state.preFullscreenOrientation = null;
   }
 
   fileInput.addEventListener("change", (event) => {
@@ -298,6 +333,11 @@
   });
 
   document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      unlockMobileOrientation();
+      state.preFullscreenOrientation = null;
+    }
+
     fullscreenButton.textContent = document.fullscreenElement ? "화면복귀" : "전체화면";
   });
 
